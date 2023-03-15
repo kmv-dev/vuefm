@@ -14,9 +14,10 @@ import Header from "@/components/Header/index.vue";
 .primary {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  background: #fafafa;
   min-width: 100%;
   min-height: 100vh;
   padding: 0 2rem;
-  font-family: $Comfortaa;
+  font-size: 14px;
 }
 </style>

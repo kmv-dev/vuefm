@@ -7,13 +7,30 @@
         class="radio__item"
         :class="{ radio__item_active: index === active }"
       >
-        <span @click="newPlay(item, index)">{{ item.name }}</span>
-
-        <div v-if="isLoading && index === active" class="radio__preloader preloader">
-          <div class="preloader__item"></div>
-        </div>
-        <div v-if="!isLoading && index === active" class="radio__wave wave">
-          <span v-for="item in 10" :key="item" class="wave__item"></span>
+        <span 
+          class="radio__title"
+          @click="stream(item.stream[0].url, index)"
+        >
+         {{ item.name }}
+        </span>
+        <div class="radio__action">
+          <div v-if="isLoading && index === active" class="radio__preloader preloader">
+            <div class="preloader__item"></div>
+          </div>
+          <div v-if="!isLoading && index === active" class="radio__wave wave">
+            <span v-for="item in 10" :key="item" class="wave__item"></span>
+          </div>
+          <select 
+            v-if="index === active"
+            v-model="selected"
+            name="select"
+            class="radio__select"
+            title="качество потокового аудио"
+            @input="selectedStream($event.target.value, index)"
+          >
+            <option v-for="option in item.stream" :value="option.url">{{ option.name }}</option>
+          </select>
+          <span class="radio__add-favourites icon-add_to_queue"></span>
         </div>
       </div>
     </div>
@@ -31,7 +48,13 @@ const duble= ref(true)
 
 //getters
 const radioList = computed(() => store.getters.getRadioList)
-const radioUrl = computed(() => store.getters.getUrl)
+const radioUrl = computed({
+  get() {
+    return store.getters.getUrl
+  },
+  set() {}
+})
+let selected = ref(radioUrl)
 
 //actions
 const playRadio = (url) => store.dispatch('playRadio', url)
@@ -43,10 +66,10 @@ watch(
   }
 )
 
-const newPlay = async (item, index) => {
+const stream = async (url, index) => {
   active.value = index
   isLoading.value = true
-  await playRadio(item.stream[0].url)
+  await playRadio(url)
   const audioPlayer = document.getElementById('myAudio')
   if (audioPlayer !== null) {
     const playPromise = audioPlayer.play()
@@ -58,6 +81,9 @@ const newPlay = async (item, index) => {
         .catch(function (e) {})
     }
   }
+}
+const selectedStream = async (url, index) => {
+  stream(url, index)
 }
 </script>
 <style lang="scss" scoped>
@@ -74,20 +100,52 @@ const newPlay = async (item, index) => {
     mask: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 150%);
     -webkit-mask: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 150%);
   }
+  &__title {
+    cursor: pointer;
+  }
   &__item {
     position: relative;
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
     padding: 2px 5px;
     min-width: 300px;
     font-size: 14px;
     font-weight: 600;
     color: #213547;
-    cursor: pointer;
+    &:hover {
+      background: #f1f3f4;
+    }
+    &:hover .radio__select {
+      background: #f1f3f4;
+    }
     &_active {
       background-color: #ffffff;
       box-shadow: 0 0.1rem 0.2rem 0 rgba(0, 0, 0, 0.15);
+    }
+  }
+  &__select {
+    border: none;
+    color: #486491;
+    font-size: 12px;
+    margin-left: 5px;
+    cursor: pointer;
+    &:focus {
+      outline: none; 
+    }
+  }
+  &__action {
+    display: flex;
+    align-items: center;
+  }
+  &__add-favourites{
+    color: #42b983;
+    margin-left: 5px;
+    opacity: 0.7;
+    cursor: pointer;
+    &:hover {
+      transform: scale(1.1);
+      opacity: 1;
     }
   }
   &__preloader {
