@@ -1,3 +1,4 @@
 export default {
-  getSomeGetter: (state) => state.someStateData,
-};
+  getUrl: (state) => state.url,
+  getRadioList: (state) => state.radioList
+}

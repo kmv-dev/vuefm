@@ -2,30 +2,21 @@
   <div class="primary">
     <Header />
     <RouterView class="primary__content" />
-    <Footer />
   </div>
 </template>
 
-<script>
+<script setup>
 import Header from "@/components/Header/index.vue";
-import Footer from "@/components/Footer/index.vue";
-export default {
-  components: {
-    Header,
-    Footer,
-  },
-};
+
 </script>
 
 <style lang="scss">
 .primary {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-width: 100%;
+  min-height: 100vh;
+  padding: 0 2rem;
   font-family: $Comfortaa;
-  &__content {
-    flex-grow: 1;
-  }
 }
 </style>

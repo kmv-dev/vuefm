@@ -1,5 +1,5 @@
 export default {
-  someAction({ commit }, someData) {
-    commit("setSomeMutation", someData);
-  },
-};
+  playRadio({ commit }, url) {
+    commit('setRadio', url)
+  }
+}

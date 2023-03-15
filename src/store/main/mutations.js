@@ -1,5 +1,5 @@
 export default {
-  setSomeMutation(state, someData) {
-    state.someStateData = someData;
-  },
-};
+  setRadio(state, url) {
+    state.url = url
+  }
+}
