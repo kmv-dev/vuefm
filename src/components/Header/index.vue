@@ -44,6 +44,7 @@ const radioUrl = computed(() => store.getters.getUrl);
   &__inner {
     display: flex;
     align-items: flex-start;
+    margin-bottom: 34px;
   }
 
   &__nav {
