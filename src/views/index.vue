@@ -1,33 +1,21 @@
 <template>
   <div class="radio">
     <div class="radio__inner">
-      <div
-        v-for="(item, index) in radioList"
-        :key="item.name"
-        class="radio__item"
-        :class="{ radio__item_active: index === active }"
-      >
-        <span 
-          class="radio__title"
-          @click="stream(item.stream[0].url, index)"
-        >
-         {{ item.name }}
+      <div v-for="(item, index) in radioList" :key="item.name" class="radio__item"
+        :class="{ radio__item_active: index === active }">
+        <span class="radio__title" @click="stream(item.stream[0].url, index)">
+          {{ item.name }}
         </span>
         <div class="radio__action">
           <div v-if="isLoading && index === active" class="radio__preloader preloader">
             <div class="preloader__item"></div>
           </div>
-          <div v-if="!isLoading && index === active" class="radio__wave wave">
+          <div v-if="!isLoading && index === active && playing" class="radio__wave wave">
             <span v-for="item in 10" :key="item" class="wave__item"></span>
           </div>
-          <select 
-            v-if="index === active"
-            v-model="selected"
-            name="select"
-            class="radio__select"
-            title="качество потокового аудио"
-            @input="selectedStream($event.target.value, index)"
-          >
+          <span v-if="!isLoading && index === active && !playing" class="icon-pause"></span>
+          <select v-if="index === active" v-model="selected" name="select" class="radio__select"
+            title="качество потокового аудио" @input="selectedStream($event.target.value, index)">
             <option v-for="option in item.stream" :value="option.url">{{ option.name }}</option>
           </select>
           <span class="radio__add-favourites icon-add_to_queue"></span>
@@ -38,54 +26,66 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
-import { useStore } from 'vuex'
+import { ref, computed, watch } from 'vue';
+import { useStore } from 'vuex';
 
-const store = useStore()
-const isLoading= ref(false)
-const active = ref(null)
-const duble= ref(true)
+const store = useStore();
+const isLoading = ref(false);
+const active = ref(null);
+const duble = ref(true);
+const playing = ref(false)
 
-//getters
-const radioList = computed(() => store.getters.getRadioList)
+// getters
+const radioList = computed(() => store.getters.getRadioList);
 const radioUrl = computed({
   get() {
-    return store.getters.getUrl
+    return store.getters.getUrl;
   },
-  set() {}
-})
-let selected = ref(radioUrl)
+  set() { },
+});
+const selected = ref(radioUrl);
 
-//actions
-const playRadio = (url) => store.dispatch('playRadio', url)
+// actions
+const playRadio = (url) => store.dispatch('playRadio', url);
 
 watch(
   () => radioUrl.value,
   () => {
-    duble.value = false
-  }
-)
+    duble.value = false;
+  },
+);
+
+const audioPlayer = document.getElementById('myAudio');
+audioPlayer.onpause = function () {
+  playing.value = false
+};
+audioPlayer.onplay = function () {
+  playing.value = true
+};
 
 const stream = async (url, index) => {
-  active.value = index
-  isLoading.value = true
-  await playRadio(url)
-  const audioPlayer = document.getElementById('myAudio')
+  active.value = index;
+  playing.value = true
+  isLoading.value = true;
+  await playRadio(url);
+  const audioPlayer = document.getElementById('myAudio');
   if (audioPlayer !== null) {
-    const playPromise = audioPlayer.play()
+    const playPromise = audioPlayer.play();
     if (playPromise !== undefined) {
       playPromise
-        .then(function () {
-          isLoading.value = false
+        .then(() => {
+          isLoading.value = false;
         })
-        .catch(function (e) {})
+        .catch((e) => { });
     }
   }
-}
+};
 const selectedStream = async (url, index) => {
-  stream(url, index)
-}
+  stream(url, index);
+};
 </script>
+
+
 <style lang="scss" scoped>
 .radio {
   padding: 50px;
@@ -93,16 +93,19 @@ const selectedStream = async (url, index) => {
   display: flex;
   align-items: center;
   margin-top: -70px;
+
   &__inner {
     padding-right: 20px;
-    max-height: 30rem;
+    max-height: 25rem;
     overflow-y: auto;
     mask: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 150%);
     -webkit-mask: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 150%);
   }
+
   &__title {
     cursor: pointer;
   }
+
   &__item {
     position: relative;
     display: flex;
@@ -113,41 +116,50 @@ const selectedStream = async (url, index) => {
     font-size: 14px;
     font-weight: 600;
     color: #213547;
+
     &:hover {
       background: #f1f3f4;
     }
+
     &:hover .radio__select {
       background: #f1f3f4;
     }
+
     &_active {
       background-color: #ffffff;
       box-shadow: 0 0.1rem 0.2rem 0 rgba(0, 0, 0, 0.15);
     }
   }
+
   &__select {
     border: none;
     color: #486491;
     font-size: 12px;
     margin-left: 5px;
     cursor: pointer;
+
     &:focus {
-      outline: none; 
+      outline: none;
     }
   }
+
   &__action {
     display: flex;
     align-items: center;
   }
-  &__add-favourites{
+
+  &__add-favourites {
     color: #42b983;
     margin-left: 5px;
     opacity: 0.7;
     cursor: pointer;
+
     &:hover {
       transform: scale(1.1);
       opacity: 1;
     }
   }
+
   &__preloader {
     width: 25px;
     height: 25px;
@@ -156,6 +168,7 @@ const selectedStream = async (url, index) => {
     align-items: center;
     position: relative;
   }
+
   .preloader {
     &__item {
       position: absolute;
@@ -171,6 +184,7 @@ const selectedStream = async (url, index) => {
       -webkit-animation: cssload-spin 575ms infinite linear;
       -moz-animation: cssload-spin 575ms infinite linear;
       box-sizing: border-box;
+
       @keyframes cssload-spin {
         100% {
           transform: rotate(360deg);
@@ -207,6 +221,7 @@ const selectedStream = async (url, index) => {
       }
     }
   }
+
   &__wave {
     width: 29px;
     height: 23px;
@@ -214,6 +229,7 @@ const selectedStream = async (url, index) => {
     justify-content: space-around;
     align-items: center;
   }
+
   .wave {
     &__item {
       display: block;
@@ -223,16 +239,19 @@ const selectedStream = async (url, index) => {
       background: rgba(0, 0, 0, 0.35);
       animation: sound 0ms -800ms linear infinite alternate;
       transition: height 0.8s;
+
       @keyframes sound {
         0% {
           opacity: 0.35;
           height: 3px;
         }
+
         100% {
           opacity: 1;
           height: 15px;
         }
       }
+
       &:nth-child(1) {
         height: 1px;
         animation-duration: 474ms;
