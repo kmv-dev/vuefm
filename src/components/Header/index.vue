@@ -6,7 +6,7 @@
         <audio controls :src="radioUrl" id="myAudio"></audio>
         <nav class="header__nav">
           <RouterLink to="/" class="header__link">Home</RouterLink>
-          <RouterLink to="/favourites" class="header__link">Favourites</RouterLink>
+          <RouterLink to="/favourites" class="header__link header__link_disabled">Favourites</RouterLink>
         </nav>
       </div>
     </div>
@@ -55,6 +55,10 @@ const radioUrl = computed(() => store.getters.getUrl);
     text-decoration: none;
     color: #2c3e50;
     border-left: 1px solid rgba(60, 60, 60, 0.12);
+
+    &_disabled {
+      pointer-events: none;
+    }
 
     &:hover {
       background-color: hsla(160, 100%, 37%, 0.2);

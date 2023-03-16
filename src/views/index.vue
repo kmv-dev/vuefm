@@ -18,7 +18,7 @@
             title="качество потокового аудио" @input="selectedStream($event.target.value, index)">
             <option v-for="option in item.stream" :value="option.url">{{ option.name }}</option>
           </select>
-          <span class="radio__add-favourites icon-add_to_queue"></span>
+          <span class="radio__add-favourites icon-add_to_queue" @click="demo"></span>
         </div>
       </div>
     </div>
@@ -83,6 +83,10 @@ const stream = async (url, index) => {
 const selectedStream = async (url, index) => {
   stream(url, index);
 };
+
+const demo = () => {
+  alert('Возможность добавить в избранное скоро появится!')
+}
 </script>
 
 
@@ -98,6 +102,7 @@ const selectedStream = async (url, index) => {
     padding-right: 20px;
     max-height: 25rem;
     overflow-y: auto;
+    overflow-x: hidden;
     mask: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 150%);
     -webkit-mask: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 150%);
   }

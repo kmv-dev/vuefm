@@ -2,6 +2,7 @@
   <div class="primary">
     <Header />
     <RouterView class="primary__content" />
+    <span class="primary__banner">2023 © Kireev Maxim - Приложение находится в стадии разработки!</span>
   </div>
 </template>
 
@@ -19,5 +20,10 @@ import Header from '@/components/Header/index.vue';
   min-height: 100vh;
   padding: 0 2rem;
   font-size: 14px;
+
+  &__banner {
+    color: #486491;
+    font-weight: 600;
+  }
 }
 </style>
