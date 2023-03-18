@@ -23,10 +23,11 @@ import ErrorAlert from '@/components/ErrorAlert/index.vue';
   min-height: 100vh;
   padding: 0 2rem;
   font-size: 14px;
+}
 
-  &__banner {
-    color: #486491;
-    font-weight: 600;
-  }
+&__banner {
+  color: #486491;
+  font-weight: 600;
+}
 }
 </style>
