@@ -47,6 +47,7 @@ const selected = ref(radioUrl);
 
 // actions
 const playRadio = (url) => store.dispatch('playRadio', url);
+const setError = (msg) => store.dispatch('setErrorMessage', msg)
 
 watch(
   () => radioUrl.value,
@@ -67,6 +68,10 @@ const stream = async (url, index) => {
   active.value = index;
   playing.value = true
   isLoading.value = true;
+  play(url)
+};
+
+const play = async (url) => {
   await playRadio(url);
   const audioPlayer = document.getElementById('myAudio');
   if (audioPlayer !== null) {
@@ -76,10 +81,12 @@ const stream = async (url, index) => {
         .then(() => {
           isLoading.value = false;
         })
-        .catch((e) => { });
+        .catch((e) => {
+          setError(e)
+        });
     }
   }
-};
+}
 const selectedStream = async (url, index) => {
   stream(url, index);
 };
@@ -105,6 +112,18 @@ const demo = () => {
     overflow-x: hidden;
     mask: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 150%);
     -webkit-mask: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 150%);
+
+    &::-webkit-scrollbar {
+      height: 3px;
+      width: 4px;
+      border-radius: 100px;
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(125, 133, 154, 0.3);
+      border-radius: 100px;
+    }
   }
 
   &__title {

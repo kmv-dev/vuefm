@@ -1,5 +1,6 @@
 export default () => ({
   url: '',
+  errorMessages: [],
   radioList: [
     {
       name: 'Promodj',
