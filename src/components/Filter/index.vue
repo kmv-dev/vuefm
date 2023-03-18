@@ -29,6 +29,7 @@ $button-bg: hsla(160, 100%, 37%, 1);
     height: 50px;
     margin-bottom: 70px;
     cursor: pointer;
+    box-shadow: 0 0.1rem 0.2rem 0 rgba(0, 189, 126, 0.1);
 
     &:active {
       transform: scale(0.9);

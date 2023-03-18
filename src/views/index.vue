@@ -142,16 +142,16 @@ const demo = () => {
     color: #213547;
 
     &:hover {
-      background: #f1f3f4;
+      background: #E3F2FD;
     }
 
     &:hover .radio__select {
-      background: #f1f3f4;
+      background: #E3F2FD;
     }
 
     &_active {
       background-color: #ffffff;
-      box-shadow: 0 0.1rem 0.2rem 0 rgba(0, 0, 0, 0.15);
+      box-shadow: 0 0.1rem 0.2rem 0 rgba(0, 189, 126, 0.27);
     }
   }
 
