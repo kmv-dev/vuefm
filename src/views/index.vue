@@ -32,7 +32,7 @@ const store = useStore();
 
 // actions
 const setStreamUrl = (url) => store.dispatch('setStreamUrl', url);
-const setError = (msg) => store.dispatch('setErrorMessage', msg)
+const setAlert = (status, msg) => store.dispatch('setAlert', { status, msg })
 
 // getters
 const radioList = computed(() => store.getters.getRadioList);
@@ -65,7 +65,7 @@ const handlePlay = async (url, index) => {
       await audioPlayer.play();
       isLoading.value = false;
     } catch (e) {
-      setError(e)
+      setAlert('error', e)
     }
   }
 }
@@ -74,7 +74,7 @@ const handlePlayIsSelected = async (url, index) => {
 };
 
 const demo = () => {
-  alert('Возможность добавить в избранное скоро появится!')
+  setAlert('success', 'Возможность добавить в избранное скоро появится!')
 }
 </script>
 

@@ -1,15 +1,26 @@
+const getRandomId = (min, max) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+};
+
 export default {
   setUrl(state, url) {
     state.url = url
   },
-  setError(state, msg) {
-    if (state.errorMessages.length > 3) {
-      state.errorMessages.shift()
+  setAlert(state, { status, msg }) {
+    const payload = {
+      id: getRandomId(0, 2139842304712),
+      status: status,
+      message: msg
     }
-    state.errorMessages.push(msg)
-    setTimeout(() => state.errorMessages = [], 11000);
+    state.alertData.push(payload)
+
+    if (state.alertData.length > 3) {
+      state.alertData.shift()
+    }
   },
-  setRemoveErrorMessge(state, msg) {
-    state.errorMessages = state.errorMessages.filter((item, index) => index !== msg)
+  setRemoveAlert(state, itemIndex) {
+    state.alertData = state.alertData.filter((item, index) => index !== itemIndex)
   }
 }

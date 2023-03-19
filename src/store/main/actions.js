@@ -2,10 +2,10 @@ export default {
   setStreamUrl({ commit }, url) {
     commit('setUrl', url)
   },
-  setErrorMessage({ commit }, msg) {
-    commit('setError', msg)
+  setAlert({ commit }, { status, msg }) {
+    commit('setAlert', { status, msg })
   },
-  removeErrorMessage({ commit }, msg) {
-    commit('setRemoveErrorMessge', msg)
+  removeAlert({ commit }, msg) {
+    commit('setRemoveAlert', msg)
   }
 }

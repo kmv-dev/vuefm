@@ -1,10 +1,12 @@
 <template>
-  <div class="error-alert">
-    <div class="error-alert__wrap">
-      <TransitionGroup tag="ul" name="list" class="container">
-        <div v-for="(error, index) in errors" :key="error" class="error-alert__item" @click="add">
-          <span><span class="error-alert__mark">!</span> {{ error }}</span>
-          <span class="error-alert__close icon-off_close" @click="close(index)" />
+  <div class="alert" v-if="getAlerts.length">
+    <div class="alert__wrap">
+      <TransitionGroup tag="ul" name="list">
+        <div v-for="(item, index) in getAlerts" :key="item.id" class="alert__item"
+          :class="item.status === 'success' ? 'alert__item_success' : 'alert__item_error'">
+          <span><span v-if="item.status === 'error'" class="alert__mark">!</span><span v-else
+              class="icon-activity"></span> {{ item.message }}</span>
+          <span class="alert__close icon-off_close" @click="hideAlert(index)" />
         </div>
       </TransitionGroup>
 
@@ -12,20 +14,43 @@
   </div>
 </template>
 <script setup>
-import { computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useStore } from 'vuex';
 const store = useStore();
 
-const errors = computed(() => store.getters.getErrorMessages)
-const removeError = (msg) => store.dispatch('removeErrorMessage', msg)
+const getAlerts = computed(() => store.getters.getAlerts)
+const removeAlert = (index) => store.dispatch('removeAlert', index)
+let intervalId = ref(null)
+const isStopInterval = ref(false)
+const isAddInterval = ref(false)
 
-const close = (msg) => {
-  removeError(msg)
+watch(
+  () => getAlerts.value.length,
+  () => {
+    if (getAlerts.value.length === 0) {
+      isStopInterval.value = true
+    }
+    if (!isAddInterval.value) {
+      isAddInterval.value = true
+      intervalId.value = setInterval(() => {
+        hideAlert(0)
+      }, 5000)
+    }
+    if (isStopInterval.value) {
+      clearInterval(intervalId.value)
+      isAddInterval.value = false
+      isStopInterval.value = false
+    }
+  }
+)
+
+const hideAlert = (index) => {
+  removeAlert(index)
 }
 </script>
 
 <style lang="scss" scoped>
-.error-alert {
+.alert {
   position: absolute;
   right: 0;
   bottom: 0;
@@ -49,18 +74,25 @@ const close = (msg) => {
     align-items: center;
     min-width: 700px;
     border: 1px solid rgba(60, 60, 60, 0.12);
-    background-color: #fadea0;
     padding: 5px 12px;
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
     margin: 5px 0;
     color: #111;
     font-weight: 500;
+
+    &_error {
+      background-color: #fadea0;
+    }
+
+    &_success {
+      background-color: rgba(255, 255, 255, 0.8);
+      color: #009688;
+    }
   }
 
   &__mark {
-    color: red;
-    font-size: 18px;
+    color: #F44336;
   }
 
   &__close {

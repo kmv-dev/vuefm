@@ -1,6 +1,6 @@
 export default () => ({
   url: '',
-  errorMessages: [],
+  alertData: [],
   radioList: [
     {
       name: 'Promodj',
