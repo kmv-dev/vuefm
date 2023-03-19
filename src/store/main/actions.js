@@ -1,6 +1,6 @@
 export default {
-  playRadio({ commit }, url) {
-    commit('setRadio', url)
+  setStreamUrl({ commit }, url) {
+    commit('setUrl', url)
   },
   setErrorMessage({ commit }, msg) {
     commit('setError', msg)

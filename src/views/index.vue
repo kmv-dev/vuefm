@@ -3,7 +3,7 @@
     <div class="radio__inner">
       <div v-for="(item, index) in radioList" :key="item.name" class="radio__item"
         :class="{ radio__item_active: index === active }">
-        <span class="radio__title" @click="stream(item.stream[0].url, index)">
+        <span class="radio__title" @click="handlePlay(item.stream[0].url, index)">
           {{ item.name }}
         </span>
         <div class="radio__action">
@@ -14,8 +14,8 @@
             <span v-for="item in 10" :key="item" class="wave__item"></span>
           </div>
           <span v-if="!isLoading && index === active && !playing" class="icon-pause"></span>
-          <select v-if="index === active" v-model="selected" name="select" class="radio__select"
-            title="качество потокового аудио" @input="selectedStream($event.target.value, index)">
+          <select v-if="index === active" v-model="selected" name="select" class="radio__select" title="Подстанции"
+            @input="handlePlayIsSelected($event.target.value, index)">
             <option v-for="option in item.stream" :value="option.url">{{ option.name }}</option>
           </select>
           <span class="radio__add-favourites icon-add_to_queue" @click="demo"></span>
@@ -26,37 +26,28 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
-
 const store = useStore();
-const isLoading = ref(false);
-const active = ref(null);
-const duble = ref(true);
-const playing = ref(false)
+
+// actions
+const setStreamUrl = (url) => store.dispatch('setStreamUrl', url);
+const setError = (msg) => store.dispatch('setErrorMessage', msg)
 
 // getters
 const radioList = computed(() => store.getters.getRadioList);
 const radioUrl = computed({
   get() {
     return store.getters.getUrl;
-  },
-  set() { },
+  }, set() { },
 });
-const selected = ref(radioUrl);
-
-// actions
-const playRadio = (url) => store.dispatch('playRadio', url);
-const setError = (msg) => store.dispatch('setErrorMessage', msg)
-
-watch(
-  () => radioUrl.value,
-  () => {
-    duble.value = false;
-  },
-);
 
 const audioPlayer = document.getElementById('myAudio');
+const selected = ref(radioUrl);
+const isLoading = ref(false);
+const active = ref(null);
+const playing = ref(false)
+
 audioPlayer.onpause = function () {
   playing.value = false
 };
@@ -64,31 +55,22 @@ audioPlayer.onplay = function () {
   playing.value = true
 };
 
-const stream = async (url, index) => {
+const handlePlay = async (url, index) => {
   active.value = index;
   playing.value = true
   isLoading.value = true;
-  play(url)
-};
-
-const play = async (url) => {
-  await playRadio(url);
-  const audioPlayer = document.getElementById('myAudio');
+  await setStreamUrl(url);
   if (audioPlayer !== null) {
-    const playPromise = audioPlayer.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          isLoading.value = false;
-        })
-        .catch((e) => {
-          setError(e)
-        });
+    try {
+      await audioPlayer.play();
+      isLoading.value = false;
+    } catch (e) {
+      setError(e)
     }
   }
 }
-const selectedStream = async (url, index) => {
-  stream(url, index);
+const handlePlayIsSelected = async (url, index) => {
+  handlePlay(url, index);
 };
 
 const demo = () => {
@@ -147,6 +129,14 @@ const demo = () => {
 
     &:hover .radio__select {
       background: #E3F2FD;
+    }
+
+    &:active .radio__select {
+      background: #E3F2FD;
+    }
+
+    &:focus .radio__select {
+      background: #ffffff;
     }
 
     &_active {

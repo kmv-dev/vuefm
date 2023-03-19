@@ -1,5 +1,5 @@
 export default {
-  setRadio(state, url) {
+  setUrl(state, url) {
     state.url = url
   },
   setError(state, msg) {
