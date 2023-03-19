@@ -2,19 +2,19 @@
   <div class="radio">
     <div class="radio__inner">
       <div v-for="(item, index) in radioList" :key="item.name" class="radio__item"
-        :class="{ radio__item_active: index === active }">
+        :class="{ radio__item_active: isActive === index }">
         <span class="radio__title" @click="handlePlay(item.stream[0].url, index)">
           {{ item.name }}
         </span>
         <div class="radio__action">
-          <div v-if="isLoading && index === active" class="radio__preloader preloader">
+          <div v-if="isLoading && isActive === index" class="radio__preloader preloader">
             <div class="preloader__item"></div>
           </div>
-          <div v-if="!isLoading && index === active && playing" class="radio__wave wave">
+          <div v-if="!isLoading && isActive === index && isPlaying" class="radio__wave wave">
             <span v-for="item in 10" :key="item" class="wave__item"></span>
           </div>
-          <span v-if="!isLoading && index === active && !playing" class="icon-pause"></span>
-          <select v-if="index === active" v-model="selected" name="select" class="radio__select" title="Подстанции"
+          <span v-if="!isLoading && isActive === index && !isPlaying" class="icon-pause"></span>
+          <select v-if="isActive === index" v-model="selected" name="select" class="radio__select" title="Подстанции"
             @input="handlePlayIsSelected($event.target.value, index)">
             <option v-for="option in item.stream" :value="option.url">{{ option.name }}</option>
           </select>
@@ -45,19 +45,19 @@ const radioUrl = computed({
 const audioPlayer = document.getElementById('myAudio');
 const selected = ref(radioUrl);
 const isLoading = ref(false);
-const active = ref(null);
-const playing = ref(false)
+const isActive = ref(null);
+const isPlaying = ref(false)
 
 audioPlayer.onpause = function () {
-  playing.value = false
+  isPlaying.value = false
 };
 audioPlayer.onplay = function () {
-  playing.value = true
+  isPlaying.value = true
 };
 
 const handlePlay = async (url, index) => {
-  active.value = index;
-  playing.value = true
+  isActive.value = index;
+  isPlaying.value = true
   isLoading.value = true;
   await setStreamUrl(url);
   if (audioPlayer !== null) {
