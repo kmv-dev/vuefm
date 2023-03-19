@@ -63,7 +63,7 @@ const handlePlay = async (url, index) => {
   if (audioPlayer !== null) {
     try {
       await audioPlayer.play();
-      isLoading.value = false;
+      isLoading.value = false
     } catch (e) {
       setAlert('error', e)
     }
@@ -133,10 +133,6 @@ const demo = () => {
 
     &:active .radio__select {
       background: #E3F2FD;
-    }
-
-    &:focus .radio__select {
-      background: #ffffff;
     }
 
     &_active {
