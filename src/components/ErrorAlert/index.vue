@@ -1,5 +1,5 @@
 <template>
-  <div class="alert" v-if="getAlerts.length">
+  <div class="alert">
     <div class="alert__wrap">
       <TransitionGroup tag="ul" name="list">
         <div v-for="(item, index) in getAlerts" :key="item.id" class="alert__item"

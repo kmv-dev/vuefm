@@ -118,7 +118,7 @@ const demo = () => {
     justify-content: space-between;
     align-items: center;
     padding: 2px 5px;
-    min-width: 300px;
+    min-width: 350px;
     font-size: 14px;
     font-weight: 600;
     color: #213547;
