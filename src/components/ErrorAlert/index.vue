@@ -2,51 +2,60 @@
   <div class="alert">
     <div class="alert__wrap">
       <TransitionGroup tag="ul" name="list">
-        <div v-for="(item, index) in getAlerts" :key="item.id" class="alert__item"
-          :class="item.status === 'success' ? 'alert__item_success' : 'alert__item_error'">
-          <span><span v-if="item.status === 'error'" class="alert__mark">!</span><span v-else
-              class="icon-activity"></span> {{ item.message }}</span>
+        <div
+          v-for="(item, index) in getAlerts"
+          :key="item.id"
+          class="alert__item"
+          :class="
+            item.status === 'success'
+              ? 'alert__item_success'
+              : 'alert__item_error'
+          "
+        >
+          <span
+            ><span v-if="item.status === 'error'" class="alert__mark">!</span
+            ><span v-else class="icon-activity"></span> {{ item.message }}</span
+          >
           <span class="alert__close icon-off_close" @click="hideAlert(index)" />
         </div>
       </TransitionGroup>
-
     </div>
   </div>
 </template>
 <script setup>
-import { ref, computed, watch } from 'vue'
-import { useStore } from 'vuex';
+import { ref, computed, watch } from "vue";
+import { useStore } from "vuex";
 const store = useStore();
 
-const getAlerts = computed(() => store.getters.getAlerts)
-const removeAlert = (index) => store.dispatch('removeAlert', index)
-let intervalId = ref(null)
-const isStopInterval = ref(false)
-const isAddInterval = ref(false)
+const getAlerts = computed(() => store.getters.getAlerts);
+const removeAlert = (index) => store.dispatch("removeAlert", index);
+let intervalId = ref(null);
+const isStopInterval = ref(false);
+const isAddInterval = ref(false);
 
 watch(
   () => getAlerts.value.length,
   () => {
     if (getAlerts.value.length === 0) {
-      isStopInterval.value = true
+      isStopInterval.value = true;
     }
     if (!isAddInterval.value) {
-      isAddInterval.value = true
+      isAddInterval.value = true;
       intervalId.value = setInterval(() => {
-        hideAlert(0)
-      }, 5000)
+        hideAlert(0);
+      }, 5000);
     }
     if (isStopInterval.value) {
-      clearInterval(intervalId.value)
-      isAddInterval.value = false
-      isStopInterval.value = false
+      clearInterval(intervalId.value);
+      isAddInterval.value = false;
+      isStopInterval.value = false;
     }
   }
-)
+);
 
 const hideAlert = (index) => {
-  removeAlert(index)
-}
+  removeAlert(index);
+};
 </script>
 
 <style lang="scss" scoped>
@@ -80,19 +89,20 @@ const hideAlert = (index) => {
     margin: 5px 0;
     color: #111;
     font-weight: 500;
+    box-shadow: 0 8.36px 6.896px #c4b59d;
 
     &_error {
-      background-color: #fadea0;
+      background-color: #f7d385;
     }
 
     &_success {
-      background-color: rgba(255, 255, 255, 0.8);
+      background-color: rgba(255, 255, 255, 1);
       color: #009688;
     }
   }
 
   &__mark {
-    color: #F44336;
+    color: #f44336;
   }
 
   &__close {

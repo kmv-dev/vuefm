@@ -1,12 +1,23 @@
 <template>
   <header class="header">
-    <img alt="logo" class="header__logo" src="@/assets/img/logo.svg" />
+    <div class="header__logo-box" ref="logoRef">
+      <div class="header__title">
+        <img alt="logo" class="header__logo" src="@/assets/img/logo.svg" />
+        radio stations
+      </div>
+    </div>
     <div class="header__inner">
-      <h1 class="header__title header__title_left">Vuefm radio stations :)</h1>
-      <audio class="header__audio" controls :src="radioUrl" id="myAudio"></audio>
+      <audio
+        class="header__audio"
+        controls
+        :src="radioUrl"
+        id="myAudio"
+      ></audio>
       <nav class="header__nav">
         <RouterLink to="/" class="header__link">Home</RouterLink>
-        <RouterLink to="/favourites" class="header__link header__link_disabled">Favourites</RouterLink>
+        <RouterLink to="/favourites" class="header__link header__link_disabled"
+          >Favourites</RouterLink
+        >
       </nav>
     </div>
     <Filter />
@@ -14,16 +25,32 @@
 </template>
 
 <script setup>
-import { RouterLink } from 'vue-router';
-import { computed } from 'vue';
-import { useStore } from 'vuex';
-
-import Filter from '../Filter/index.vue';
+import { ref, onMounted } from "vue";
+import { RouterLink } from "vue-router";
+import { computed } from "vue";
+import { useStore } from "vuex";
+import Filter from "../Filter/index.vue";
 
 const store = useStore();
-
-// getters
 const radioUrl = computed(() => store.getters.getUrl);
+
+const logoRef = ref(null);
+const xPos = ref(null);
+const yPos = ref(null);
+
+onMounted(() => {
+  document.getElementById("app").addEventListener("mousemove", (event) => {
+    xPos.value = event.pageX;
+    yPos.value = event.pageY;
+    createOffset();
+  });
+});
+
+const createOffset = () => {
+  let [moveX, moveY] = [xPos.value / +10, yPos.value / +22];
+  let [oneText] = [logoRef.value];
+  oneText.style.transform = `translate3d(${moveX / 2}px, ${moveY}px, 0)`;
+};
 </script>
 
 <style lang="scss" scoped>
@@ -36,10 +63,14 @@ const radioUrl = computed(() => store.getters.getUrl);
     display: flex;
     flex-direction: column;
     margin-bottom: 34px;
+    margin-right: 50px;
   }
 
   &__logo {
-    width: 115px;
+    position: absolute;
+    left: -22%;
+    top: 16%;
+    width: 50px;
     transform: rotate(-90deg);
     margin-right: 10px;
     margin-bottom: 25px;
@@ -47,12 +78,9 @@ const radioUrl = computed(() => store.getters.getUrl);
     pointer-events: none;
   }
 
-  &__nav {
-    margin-top: 10px;
-  }
-
   &__audio {
     margin-top: 10px;
+    padding: 8px 0;
   }
 
   &__link {
@@ -83,9 +111,12 @@ const radioUrl = computed(() => store.getters.getUrl);
   }
 
   &__title {
+    position: relative;
+    margin-right: 150px;
+    margin-top: -50%;
     font-family: Roboto, Arial, sans-serif;
     text-align: center;
-    font-size: 1.1rem;
+    font-size: 2.5rem;
     font-weight: 800;
     background-color: #42d392;
     background-image: linear-gradient(315deg, #42d392, #647eff);

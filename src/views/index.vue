@@ -1,24 +1,55 @@
 <template>
   <div class="radio">
     <div class="radio__inner">
-      <div v-for="(item, index) in radioList" :key="item.name" class="radio__item"
-        :class="{ radio__item_active: isActive === index }">
-        <span class="radio__title" @click="handlePlay(item.stream[0].url, index)">
+      <div
+        v-for="(item, index) in radioList"
+        :key="item.name"
+        class="radio__item"
+        :class="{ radio__item_active: isActive === index }"
+      >
+        <span
+          class="radio__title"
+          @click="handlePlay(item.stream[0].url, index)"
+        >
           {{ item.name }}
         </span>
         <div class="radio__action">
-          <div v-if="isLoading && isActive === index" class="radio__preloader preloader">
+          <div
+            v-if="isLoading && isActive === index"
+            class="radio__preloader preloader"
+          >
             <div class="preloader__item"></div>
           </div>
-          <div v-if="!isLoading && isActive === index && isPlaying" class="radio__wave wave">
+          <div
+            v-if="!isLoading && isActive === index && isPlaying"
+            class="radio__wave wave"
+          >
             <span v-for="item in 10" :key="item" class="wave__item"></span>
           </div>
-          <span v-if="!isLoading && isActive === index && !isPlaying" class="icon-pause"></span>
-          <select v-if="isActive === index" v-model="selected" name="select" class="radio__select" title="Подстанции"
-            @input="handlePlayIsSelected($event.target.value, index)">
-            <option v-for="option in item.stream" :value="option.url">{{ option.name }}</option>
+          <span
+            v-if="!isLoading && isActive === index && !isPlaying"
+            class="icon-pause"
+          ></span>
+          <select
+            v-if="isActive === index"
+            v-model="selected"
+            name="select"
+            class="radio__select"
+            title="Подстанции"
+            @input="handlePlayIsSelected($event.target.value, index)"
+          >
+            <option
+              v-for="option in item.stream"
+              :value="option.url"
+              :key="option.name"
+            >
+              {{ option.name }}
+            </option>
           </select>
-          <span class="radio__add-favourites icon-add_to_queue" @click="demo"></span>
+          <span
+            class="radio__add-favourites icon-add_to_queue"
+            @click="demo"
+          ></span>
         </div>
       </div>
     </div>
@@ -26,74 +57,82 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useStore } from 'vuex';
+import { ref, computed } from "vue";
+import { useStore } from "vuex";
 const store = useStore();
 
 // actions
-const setStreamUrl = (url) => store.dispatch('setStreamUrl', url);
-const setAlert = (status, msg) => store.dispatch('setAlert', { status, msg })
+const setStreamUrl = (url) => store.dispatch("setStreamUrl", url);
+const setAlert = (status, msg) => store.dispatch("setAlert", { status, msg });
 
 // getters
 const radioList = computed(() => store.getters.getRadioList);
 const radioUrl = computed({
   get() {
     return store.getters.getUrl;
-  }, set() { },
+  },
+  set() {},
 });
 
-const audioPlayer = document.getElementById('myAudio');
+const audioPlayer = document.getElementById("myAudio");
 const selected = ref(radioUrl);
 const isLoading = ref(false);
 const isActive = ref(null);
-const isPlaying = ref(false)
+const isPlaying = ref(false);
 
 audioPlayer.onpause = function () {
-  isPlaying.value = false
+  isPlaying.value = false;
+  isLoading.value = false;
 };
 audioPlayer.onplay = function () {
-  isPlaying.value = true
+  isPlaying.value = true;
 };
 
 const handlePlay = async (url, index) => {
   isActive.value = index;
-  isPlaying.value = true
+  isPlaying.value = true;
   isLoading.value = true;
   await setStreamUrl(url);
-  if (audioPlayer !== null) {
+  if (audioPlayer !== null && !audioPlayer.pause()) {
     try {
       await audioPlayer.play();
-      isLoading.value = false
+      isLoading.value = false;
     } catch (e) {
-      setAlert('error', e)
+      setAlert("error", e);
     }
   }
-}
+};
 const handlePlayIsSelected = async (url, index) => {
   handlePlay(url, index);
 };
 
 const demo = () => {
-  setAlert('success', 'Возможность добавить в избранное скоро появится!')
-}
+  setAlert("success", "Возможность добавить в избранное скоро появится!");
+};
 </script>
-
 
 <style lang="scss" scoped>
 .radio {
+  position: relative;
   padding: 50px;
   min-height: 100vh;
   display: flex;
   align-items: center;
   margin-top: -70px;
-
   &__inner {
     padding-right: 20px;
-    max-height: 25rem;
+    max-height: 35rem;
     overflow-y: auto;
-    overflow-x: hidden;
-    mask: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 150%);
-    -webkit-mask: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 150%);
+    mask: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 0) 150%
+    );
+    -webkit-mask: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 0) 150%
+    );
 
     &::-webkit-scrollbar {
       height: 3px;
@@ -117,27 +156,32 @@ const demo = () => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 2px 5px;
+    padding: 2px 8px;
     min-width: 350px;
     font-size: 14px;
     font-weight: 600;
     color: #213547;
+    margin-bottom: 2px;
 
     &:hover {
-      background: #E3F2FD;
+      background: #e3f2fd;
+      box-shadow: 0 2.36px 1.896px #c4b59d, 0 0px 1px #fff;
     }
 
     &:hover .radio__select {
-      background: #E3F2FD;
+      background: #e3f2fd;
     }
 
     &:active .radio__select {
-      background: #E3F2FD;
+      background: #e3f2fd;
     }
 
     &_active {
+      position: sticky;
+      top: 0;
+      z-index: 10;
       background-color: #ffffff;
-      box-shadow: 0 0.1rem 0.2rem 0 rgba(0, 189, 126, 0.27);
+      box-shadow: 0 2.36px 0.896px #c4b59d, 0 -1px 1px #fff;
     }
   }
 
@@ -159,9 +203,9 @@ const demo = () => {
   }
 
   &__add-favourites {
-    color: #42b983;
+    color: #4bca9e;
     margin-left: 5px;
-    opacity: 0.7;
+    opacity: 1;
     cursor: pointer;
 
     &:hover {
