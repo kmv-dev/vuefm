@@ -26,18 +26,45 @@ import ErrorAlert from "@/components/ErrorAlert/index.vue";
   min-height: 100vh;
   padding: 0 2rem;
   font-size: 14px;
+  &__content {
+    display: flex;
+    align-items: center;
+  }
   &__decor {
     position: absolute;
-    top: 42%;
-    left: 11%;
+    bottom: 18%;
+    left: 15%;
     font-weight: 800;
-    font-size: 14rem;
+    font-size: 12rem;
     color: #fff;
+    z-index: 1;
     text-shadow: 0 8.36px 6.896px #c4b59d, 0 -2px 1px #fff;
   }
   &__banner {
+    position: absolute;
+    bottom: 0;
     color: #486491;
     font-weight: 600;
+  }
+  @include _1500 {
+    &__decor {
+      font-size: 10rem;
+    }
+  }
+  @include _1400 {
+    &__decor {
+      font-size: 8rem;
+    }
+  }
+  @include _1300 {
+    &__decor {
+      font-size: 7rem;
+    }
+  }
+  @include _1199 {
+    &__decor {
+      font-size: 6rem;
+    }
   }
 }
 </style>

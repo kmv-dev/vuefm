@@ -9,9 +9,9 @@ const router = createRouter({
       component: () => import("../views/index.vue"),
     },
     {
-      path: '/favourites',
-      name: 'favourites',
-      component: () => import('../views/favourites.vue')
+      path: "/favourites",
+      name: "favourites",
+      component: () => import("../views/favourites.vue"),
     },
     {
       path: "/:pathMatch(.*)*",

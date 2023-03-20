@@ -16,6 +16,7 @@ body {
   margin: 0;
   font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
     Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    overflow: hidden;
 }
 
 ul[class],
@@ -138,4 +139,27 @@ button {
 .list-leave-active {
   z-index: 10;
   width: 100%;
+}
+
+
+.nested-enter-active .radio__inner,
+.nested-leave-active .radio__inner {
+  transition: all 0.3s ease-in-out;
+}
+/* delay enter of nested element */
+.nested-enter-active .radio__inner {
+  transition-delay: 0.25s;
+}
+
+.nested-enter-from .radio__inner,
+.nested-leave-to .radio__inner {
+  transform: translateX(150px);
+  overflow-x: hidden;
+  position: absolute;
+  /*
+  	Hack around a Chrome 96 bug in handling nested opacity transitions.
+    This is not needed in other browsers or Chrome 99+ where the bug
+    has been fixed.
+  */
+  opacity: 0.001;
 }

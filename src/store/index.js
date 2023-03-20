@@ -1,10 +1,10 @@
-import { createStore } from 'vuex'
-import main from './main/index.js'
+import { createStore } from "vuex";
+import main from "./main/index.js";
 
 const store = createStore({
   modules: {
-    main
-  }
-})
+    main,
+  },
+});
 
-export default store
+export default store;

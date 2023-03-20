@@ -1,5 +1,6 @@
 <template>
   <header class="header">
+    <div class="transition" :class="{ 'anim-trans': startw === true }"></div>
     <div class="header__logo-box" ref="logoRef">
       <div class="header__title">
         <img alt="logo" class="header__logo" src="@/assets/img/logo.svg" />
@@ -14,29 +15,41 @@
         id="myAudio"
       ></audio>
       <nav class="header__nav">
-        <RouterLink to="/" class="header__link">Home</RouterLink>
-        <RouterLink to="/favourites" class="header__link header__link_disabled"
-          >Favourites</RouterLink
+        <span class="header__link" :class="toggleClass" @click="togglePage('/')"
+          >Home</span
+        >
+        <span
+          class="header__link"
+          :class="toggleClass"
+          @click="togglePage('/favourites')"
+          >Favourites</span
         >
       </nav>
     </div>
-    <Filter />
   </header>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { RouterLink } from "vue-router";
 import { computed } from "vue";
 import { useStore } from "vuex";
-import Filter from "../Filter/index.vue";
+import router from "../../router";
 
 const store = useStore();
 const radioUrl = computed(() => store.getters.getUrl);
 
+const startw = ref(false);
+const isAnimation = ref(false);
 const logoRef = ref(null);
 const xPos = ref(null);
 const yPos = ref(null);
+const toggleClass = computed(() => {
+  return [
+    {
+      disabled: isAnimation.value,
+    },
+  ];
+});
 
 onMounted(() => {
   document.getElementById("app").addEventListener("mousemove", (event) => {
@@ -46,6 +59,18 @@ onMounted(() => {
   });
 });
 
+const togglePage = (route) => {
+  isAnimation.value = true;
+  startw.value = true;
+  setTimeout(async () => {
+    router.push(route);
+  }, 1200);
+  setTimeout(() => {
+    startw.value = false;
+    isAnimation.value = false;
+  }, 3000);
+};
+
 const createOffset = () => {
   let [moveX, moveY] = [xPos.value / +10, yPos.value / +22];
   let [oneText] = [logoRef.value];
@@ -54,6 +79,51 @@ const createOffset = () => {
 </script>
 
 <style lang="scss" scoped>
+.transition {
+  position: absolute;
+  left: 0;
+  height: 100%;
+  max-height: 100vh;
+  width: 0;
+  background: #111;
+  transform: skewX(-5deg) translateX(-50px);
+  transition: 2s all ease-in-out;
+  -webkit-transition: 2s all ease-in-out;
+  z-index: 11;
+}
+.anim-trans {
+  animation: anim 4s ease-in-out;
+}
+
+@keyframes anim {
+  0% {
+    \transform: skewX(0deg) translateX(0%);
+    left: 0;
+  }
+  20% {
+    \transform: skewX(0deg) translateX(-0%);
+    width: 100%;
+  }
+  40% {
+    \transform: skewX(0deg) translateX(-0%);
+    width: 100%;
+  }
+  60% {
+    transform: skewX(-12deg) translateX(100%);
+    width: 100%;
+    box-shadow: 10px 10px 5px #eaeaea;
+  }
+  80% {
+    transform: skewX(-0.06turn) translateX(100%);
+    width: 150%;
+    box-shadow: 10px 10px 5px 10px #eaeaea;
+  }
+  100% {
+    transform: skewX(-27deg) translateX(200%);
+    width: 160%;
+    box-shadow: 10px 10px 5px #eaeaea;
+  }
+}
 .header {
   display: flex;
   justify-content: flex-end;
@@ -65,14 +135,21 @@ const createOffset = () => {
     margin-bottom: 34px;
     margin-right: 50px;
   }
-
+  &__nav {
+    z-index: 10;
+  }
+  &__logo-box {
+    position: absolute;
+    left: 10%;
+    z-index: 20;
+  }
   &__logo {
     position: absolute;
     left: -22%;
     top: 16%;
     width: 50px;
     margin-bottom: 25px;
-    opacity: 0.9;
+    opacity: 1;
     pointer-events: none;
   }
 
@@ -86,11 +163,10 @@ const createOffset = () => {
     text-decoration: none;
     color: #2c3e50;
     border-left: 1px solid rgba(60, 60, 60, 0.12);
-
-    &_disabled {
+    cursor: pointer;
+    &.disabled {
       pointer-events: none;
     }
-
     &:hover {
       background-color: hsla(160, 100%, 37%, 0.2);
     }

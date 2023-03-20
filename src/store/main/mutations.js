@@ -6,21 +6,23 @@ const getRandomId = (min, max) => {
 
 export default {
   setUrl(state, url) {
-    state.url = url
+    state.url = url;
   },
   setAlert(state, { status, msg }) {
     const payload = {
       id: getRandomId(0, 2139842304712),
       status: status,
-      message: msg
-    }
-    state.alertData.push(payload)
+      message: msg,
+    };
+    state.alertData.push(payload);
 
     if (state.alertData.length > 3) {
-      state.alertData.shift()
+      state.alertData.shift();
     }
   },
   setRemoveAlert(state, itemIndex) {
-    state.alertData = state.alertData.filter((item, index) => index !== itemIndex)
-  }
-}
+    state.alertData = state.alertData.filter(
+      (item, index) => index !== itemIndex
+    );
+  },
+};
