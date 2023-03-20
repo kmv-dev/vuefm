@@ -2,7 +2,7 @@
   <header class="header">
     <div class="header__logo-box" ref="logoRef">
       <div class="header__title">
-        <img alt="logo" class="header__logo" src="@/assets/img/logo.svg" />
+        <img alt="logo" class="header__logo" src="@/assets/img/logo111.svg" />
         radio stations
       </div>
     </div>
@@ -71,8 +71,6 @@ const createOffset = () => {
     left: -22%;
     top: 16%;
     width: 50px;
-    transform: rotate(-90deg);
-    margin-right: 10px;
     margin-bottom: 25px;
     opacity: 0.9;
     pointer-events: none;

@@ -28,8 +28,8 @@ import ErrorAlert from "@/components/ErrorAlert/index.vue";
   font-size: 14px;
   &__decor {
     position: absolute;
-    top: 38%;
-    left: 10%;
+    top: 42%;
+    left: 11%;
     font-weight: 800;
     font-size: 14rem;
     color: #fff;
