@@ -2,7 +2,7 @@
   <header class="header">
     <div class="header__logo-box" ref="logoRef">
       <div class="header__title">
-        <img alt="logo" class="header__logo" src="@/assets/img/logo111.svg" />
+        <img alt="logo" class="header__logo" src="@/assets/img/logo.svg" />
         radio stations
       </div>
     </div>
