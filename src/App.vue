@@ -46,14 +46,16 @@ import ErrorAlert from "@/components/ErrorAlert/index.vue";
     color: #486491;
     font-weight: 600;
   }
-  @include _1500 {
+  @include _1600 {
     &__decor {
-      font-size: 10rem;
+      left: 18%;
+      font-size: 9rem;
+      bottom: 14%;
     }
   }
   @include _1400 {
     &__decor {
-      font-size: 8rem;
+      font-size: 7rem;
     }
   }
   @include _1300 {

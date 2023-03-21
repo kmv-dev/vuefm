@@ -73,9 +73,10 @@ const stations = [
     transform: rotate(90deg);
     text-shadow: 0 4.36px 2.896px #c4b59d, 0 -2px 1px #fff;
   }
-  @include _1500 {
+  @include _1600 {
     &__decor {
-      right: 7%;
+      font-size: 2.5rem;
+      right: 10%;
     }
   }
   @include _1400 {
