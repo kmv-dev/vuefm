@@ -1,7 +1,10 @@
 <template>
   <header class="header">
-    <div class="transition" :class="{ 'anim-trans': startw === true }"></div>
-    <div class="header__logo-box" ref="logoRef">
+    <div
+      class="transition"
+      :class="{ 'anim-trans': isAnimation === true }"
+    ></div>
+    <div class="header__logo-box" ref="offset">
       <div class="header__title">
         <img alt="logo" class="header__logo" src="@/assets/img/logo.svg" />
         radio stations
@@ -15,14 +18,13 @@
         id="myAudio"
       ></audio>
       <nav class="header__nav">
-        <span class="header__link" :class="toggleClass" @click="togglePage('/')"
-          >Home</span
-        >
         <span
+          v-for="(link, index) in links"
+          :key="link.name"
           class="header__link"
-          :class="toggleClass"
-          @click="togglePage('/favourites')"
-          >Favourites</span
+          :class="[toggleClass, { active: isActiveLink === index }]"
+          @click="togglePage(link.to, index)"
+          >{{ link.title }}</span
         >
       </nav>
     </div>
@@ -38,9 +40,19 @@ import router from "../../router";
 const store = useStore();
 const radioUrl = computed(() => store.getters.getUrl);
 
-const startw = ref(false);
+const links = [
+  {
+    title: "Home",
+    to: "/",
+  },
+  {
+    title: "Избранное",
+    to: "/favourites",
+  },
+];
+const isActiveLink = ref(0);
 const isAnimation = ref(false);
-const logoRef = ref(null);
+const offset = ref(null);
 const xPos = ref(null);
 const yPos = ref(null);
 const toggleClass = computed(() => {
@@ -59,26 +71,101 @@ onMounted(() => {
   });
 });
 
-const togglePage = (route) => {
+const togglePage = (route, index) => {
+  if (route === router.currentRoute.value.fullPath) {
+    return;
+  }
   isAnimation.value = true;
-  startw.value = true;
   setTimeout(async () => {
     router.push(route);
-  }, 1200);
+    isActiveLink.value = index;
+  }, 1000);
   setTimeout(() => {
-    startw.value = false;
     isAnimation.value = false;
   }, 3000);
 };
 
 const createOffset = () => {
   let [moveX, moveY] = [xPos.value / +10, yPos.value / +22];
-  let [oneText] = [logoRef.value];
-  oneText.style.transform = `translate3d(${moveX / 2}px, ${moveY}px, 0)`;
+  offset.value.style.transform = `translate3d(${moveX / 2}px, ${moveY}px, 0)`;
 };
 </script>
 
 <style lang="scss" scoped>
+.header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  &__inner {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 34px;
+    margin-right: 50px;
+  }
+  &__nav {
+    z-index: 10;
+  }
+  &__logo-box {
+    position: absolute;
+    left: 10%;
+    z-index: 20;
+  }
+  &__logo {
+    position: absolute;
+    left: -22%;
+    top: 16%;
+    width: 50px;
+    margin-bottom: 25px;
+    opacity: 1;
+    pointer-events: none;
+  }
+
+  &__audio {
+    margin-top: 10px;
+    padding: 8px 0;
+  }
+
+  &__link {
+    padding: 0 1rem;
+    text-decoration: none;
+    color: #546e7a;
+    border-left: 1px solid rgba(60, 60, 60, 0.12);
+    cursor: pointer;
+    &.active {
+      color: #4bca9e;
+    }
+    &.disabled {
+      pointer-events: none;
+    }
+    &:hover {
+      background-color: #eeeeee;
+    }
+    &.active:hover {
+      background-color: transparent;
+    }
+
+    &:first-child {
+      border: 0;
+    }
+  }
+
+  &__title {
+    position: relative;
+    margin-right: 150px;
+    margin-top: -50%;
+    font-family: Roboto, Arial, sans-serif;
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 800;
+    background-color: #42d392;
+    background-image: linear-gradient(315deg, #42d392, #647eff);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    pointer-events: none;
+  }
+}
 .transition {
   position: absolute;
   left: 0;
@@ -122,82 +209,6 @@ const createOffset = () => {
     transform: skewX(-27deg) translateX(200%);
     width: 160%;
     box-shadow: 10px 10px 5px #eaeaea;
-  }
-}
-.header {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-
-  &__inner {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 34px;
-    margin-right: 50px;
-  }
-  &__nav {
-    z-index: 10;
-  }
-  &__logo-box {
-    position: absolute;
-    left: 10%;
-    z-index: 20;
-  }
-  &__logo {
-    position: absolute;
-    left: -22%;
-    top: 16%;
-    width: 50px;
-    margin-bottom: 25px;
-    opacity: 1;
-    pointer-events: none;
-  }
-
-  &__audio {
-    margin-top: 10px;
-    padding: 8px 0;
-  }
-
-  &__link {
-    padding: 0 1rem;
-    text-decoration: none;
-    color: #2c3e50;
-    border-left: 1px solid rgba(60, 60, 60, 0.12);
-    cursor: pointer;
-    &.disabled {
-      pointer-events: none;
-    }
-    &:hover {
-      background-color: hsla(160, 100%, 37%, 0.2);
-    }
-
-    &.router-link-exact-active {
-      color: hsla(160, 100%, 37%, 1);
-    }
-
-    &.router-link-exact-active:hover {
-      background-color: transparent;
-    }
-
-    &:first-child {
-      border: 0;
-    }
-  }
-
-  &__title {
-    position: relative;
-    margin-right: 150px;
-    margin-top: -50%;
-    font-family: Roboto, Arial, sans-serif;
-    text-align: center;
-    font-size: 2.5rem;
-    font-weight: 800;
-    background-color: #42d392;
-    background-image: linear-gradient(315deg, #42d392, #647eff);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    pointer-events: none;
   }
 }
 </style>

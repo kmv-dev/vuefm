@@ -57,11 +57,9 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
 const store = useStore();
-const router = useRouter();
 
 const props = defineProps({
   listStation: {
@@ -89,22 +87,14 @@ const isActive = ref(null);
 const isPlaying = ref(false);
 
 onMounted(() => {
-  for (let i = 0; i < props.listStation.length; i++) {
-    props.listStation[i].stream.findIndex((el) => {
-      if (el.url === radioUrl.value) {
-        isActive.value = i;
-        isLoading.value = false;
-        isPlaying.value = true;
-      }
-    });
-  }
+  setStreamUrl("");
 });
 
-audioPlayer.onpause = function () {
+audioPlayer.onpause = () => {
   isPlaying.value = false;
   isLoading.value = false;
 };
-audioPlayer.onplay = function () {
+audioPlayer.onplay = () => {
   isPlaying.value = true;
 };
 
@@ -113,12 +103,13 @@ const handlePlay = async (url, index) => {
   isPlaying.value = true;
   isLoading.value = true;
   await setStreamUrl(url);
-  if (audioPlayer !== null && !audioPlayer.onpause()) {
+  if (audioPlayer !== null) {
     try {
       await audioPlayer.play();
       isLoading.value = false;
     } catch (e) {
       setAlert("error", e);
+      isLoading.value = false;
     }
   }
 };
@@ -184,6 +175,7 @@ const demo = () => {
     font-weight: 600;
     color: #213547;
     margin-bottom: 2px;
+    border-radius: 2px;
 
     &:hover {
       background: #e3f2fd;
